@@ -1,3 +1,2 @@
 add reg1,reg1,reg2
-add reg2,reg3,reg2
-add reg1,reg2,reg3
+sub reg1,reg1,reg2
