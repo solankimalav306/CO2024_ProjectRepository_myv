@@ -34,6 +34,12 @@ def sub(rd,rs1,rs2):
     funct3 = "000"
     rd[1] = rs1[1]-rs2[1]
     return funct7+rs2[0]+rs1[0]+funct3+rd[0]+opcode
+def sub(rd,x0,rs):
+    opcode="0110011"
+    funct7="0100000"
+    funct3="000"
+    rd[1]=x0[1]-rs[1]
+    return funct7+x0[0]+rs[0]+funct3+rd[0]+opcode
 def sltu (rd,rs1,rs2):
     opcode="0110011"
     funct7="0000000"
