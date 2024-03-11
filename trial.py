@@ -1,8 +1,7 @@
 # Register Set with DEFAULT VALUES
 reg1 = ["0000",0]
-reg2 = ["0001",2]
-reg3 = ["0010",9]
-
+reg2 = ["0001",0]
+reg3 = ["0010",0]
 
 def add(rd,rs1,rs2):
     opcode = "0110011"
@@ -17,6 +16,7 @@ def sub(rd,rs1,rs2):
     funct3 = "000"
     rd[1] = rs1[1]-rs2[1]
     return funct7+rs2[0]+rs1[0]+funct3+rd[0]+opcode
+
 
 
 bincode = []
