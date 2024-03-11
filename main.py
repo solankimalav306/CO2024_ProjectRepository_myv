@@ -65,12 +65,12 @@ def slt(rd,rs1,rs2):
         rd[1] = 1
     return funct7+rs2[0]+rs1[0]+funct3+rd[0]+opcode
 
-def xor_bitwise(rd,rs1,rs2):
+def xor(rd,rs1,rs2):
     opcode = "0110011"
     funct7 = "0000000"
     funct3 = "100"
     return funct7+rs2[0]+rs1[0]+funct3+rd[0]+opcode
-def or_bitwise(rd,rs1,rs2):
+def Or(rd,rs1,rs2):
     opcode="0110011"
     funct7="0000000"
     funct3="110"
@@ -86,7 +86,7 @@ def srl(rd,rs1,rs2):
     funct3 = "101"
     return funct7+rs2[0]+rs1[0]+funct3+rd[0]+opcode
 
-def and_bitwise(rd,rs1,rs2):
+def And(rd,rs1,rs2):
     opcode = "0110011"
     funct7 = "0000000"
     funct3 = "111"
@@ -119,7 +119,12 @@ def jalr(rd,offset):
     return sextoff+RegList[5][0]+funct3+rd[0]+opcode
 
 RegList = [["zero","00000",0],["ra","00001",0],["sp","00010",0],["gp","00011",18],["tp","00100",0],["t0","00101",0],["t1","00110",0],["t2","00111",0],["s0 fp","01000",0],["s1","01001",0],["a0","01010",0],["a1","01011",0],["a2","01100",0],["a3","01101",0],["a4","01110",0],["a5","01111",0],["a6","10000",0],["a7","10001",0],["s2","10010",0],["s3","10011",0],["s4","10100",0],["s5","10101",0],["s6","10110",0],["s7","10111",0],["s8","11000",0],["s9","11001",0],["s10","11010",0],["s11","11011",0],["t3","11100",0],["t4","11101",0],["t5","11110",0],["t6","11111",0]]
-
+R_type=[[add],[sub],[slt],[sltu],[xor],[sll],[srl],[Or],[And]]
+I_type=[[lw],[addi],[sltiu],[jalr]]
+s_tpye=[[sw]]
+b_type=[[beq],[bne],[bge],[bgeu],[blt],[bltu]]
+u_tpye=[[auipc],[lui]]
+j_type=[[jal]]
 zero=RegList[0]
 ra=RegList[1]
 sp=RegList[2]
