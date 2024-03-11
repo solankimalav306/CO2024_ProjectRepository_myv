@@ -182,6 +182,8 @@ def ErrorGen():
         if len(i)==0:
             continue
         else:
+            if ":" in i[0]:
+                i.remove(i[0])
             ins=i[0]
             for q in insL:
                 for w in q:
