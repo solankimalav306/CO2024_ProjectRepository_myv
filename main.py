@@ -69,6 +69,11 @@ def or_bitwise(rd,rs1,rs2):
     funct7="0000000"
     funct3="110"
     return funct7+rs2[0]+rs1[0]+funct3+rd[0]+opcode
+def sll(rd,rs1,rs2):
+    opcode="0110011"
+    funct7="0000000"
+    funct3="001"
+    return funct7+rs2[0]+rs1[0]+funct3+rd[0]+opcode
 def srl(rd,rs1,rs2):
     opcode = "0110011"
     funct7 = "0000000"
