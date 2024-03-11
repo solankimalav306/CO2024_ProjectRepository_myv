@@ -119,13 +119,14 @@ def jalr(rd,offset):
     return sextoff+RegList[5][0]+funct3+rd[0]+opcode
 
 RegList = [["zero","00000",0],["ra","00001",0],["sp","00010",0],["gp","00011",18],["tp","00100",0],["t0","00101",0],["t1","00110",0],["t2","00111",0],["s0 fp","01000",0],["s1","01001",0],["a0","01010",0],["a1","01011",0],["a2","01100",0],["a3","01101",0],["a4","01110",0],["a5","01111",0],["a6","10000",0],["a7","10001",0],["s2","10010",0],["s3","10011",0],["s4","10100",0],["s5","10101",0],["s6","10110",0],["s7","10111",0],["s8","11000",0],["s9","11001",0],["s10","11010",0],["s11","11011",0],["t3","11100",0],["t4","11101",0],["t5","11110",0],["t6","11111",0]]
-R_type=["add","sub","slt","sltu","xor","sll","srl","Or","And"]
-I_type=["lw","addi","sltiu","jalr"]
+r_type=["add","sub","slt","sltu","xor","sll","srl","Or","And"]
+i_type=["lw","addi","sltiu","jalr"]
 s_type=["sw"]
 b_type=["beq","bne","bge","bgeu","blt","bltu"]
 u_type=["auipc","lui"]
 j_type=["jal"]
-ABIname=["zero", "ra","sp","gp","tp","t0","t1","t2","s0","fp","s1","a0","a1","a2","a3","a4","a5","a6","a7","s2","s3","s4","s5","s6","s7","s8","s9","s10","s11","t3","t4","t5","t6"]
+insL=[r_type,i_type,s_type,b_type,u_type,j_type]
+ABIname=["zero","ra","sp","gp","tp","t0","t1","t2","s0","fp","s1","a0","a1","a2","a3","a4","a5","a6","a7","s2","s3","s4","s5","s6","s7","s8","s9","s10","s11","t3","t4","t5","t6"]
 zero=RegList[0]
 ra=RegList[1]
 sp=RegList[2]
@@ -160,10 +161,76 @@ t4=RegList[29]
 t5=RegList[30]
 t6=RegList[31]
 
-
 with open("coprj_mvy\input.txt") as f:
     x = f.readlines()
     for i in range(len(x)):
         if(i!=len(x)-1):
-            x[i] = x[i][:-2]
+            x[i] = x[i][:-1]
     print(x)
+
+def ErrorGen():
+    global x , insL
+    Realins=False
+    MasterL=[]
+    if (x[-1]=="beq zero,zero,0") or (x[-1]=="beq zero,zero,0x00000000"):
+        for i in x:
+            z=i.split()
+            MasterL.append(z)
+    else:
+        return 0
+    for i in MasterL:
+        if len(i)==0:
+            continue
+        else:
+            ins=i[0]
+            for q in insL:
+                for w in q:
+                    if ins==w:
+                        containedinsL=q
+                        Realins=True
+            if Realins==False:
+                return 0
+            else:
+                Realins==False
+                x=i[1].split(",")
+                if containedinsL==r_type:
+                    if (x[0] in ABIname) and (x[1] in ABIname) and (x[2] in ABIname):
+                        continue
+                    else:
+                        return 0
+                elif containedinsL==i_type:
+                    if i[0]=="lw":
+                        lwspecialcase=x[1].split("(")
+                        lwspecialcase[1]=lwspecialcase[1][:-1]
+                        if (x[0] in ABIname) and (int(lwspecialcase[0])<=2047) and (lwspecialcase[1] in ABIname):
+                            continue
+                        else:
+                            return 0
+                    else:
+                        if (x[0] in ABIname) and (x[1] in ABIname) and (int(x[2])<=2047):
+                            continue
+                        else:
+                            return 0
+                elif containedinsL== s_type:
+                    swspecialcase=x[1].split("(")
+                    swspecialcase[1]=swspecialcase[1][:-1]
+                    if (x[0] in ABIname) and (int(swspecialcase[0])<=2047) and (swspecialcase[1] in ABIname):
+                        continue
+                    else:
+                        return 0
+                elif containedinsL == b_type:
+                    if (x[0] in ABIname) and (x[1] in ABIname) and (int(x[2])<=4097):
+                        continue
+                    else:
+                        return 0
+                elif containedinsL == u_type:
+                    if (x[0] in ABIname) and (int(x[1])<= 524287):
+                        continue
+                    else:
+                        return 0
+                elif containedinsL == j_type:
+                    if (x[0] in ABIname) and (int(x[1])<= 524287):
+                        continue
+                    else:
+                        return 0
+    return 1
