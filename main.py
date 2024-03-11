@@ -1,8 +1,8 @@
-def sext(reg,bit):
+def sext(imm,bit):
     if(reg[1]>0):
-        regbin = "0"+str(bin(reg[1]))[2:]
+        regbin = "0"+str(bin(imm))[2:]
     else:
-        regbin = "1"+str(bin(reg[1]))[3:]
+        regbin = "1"+str(bin(imm))[3:]
     flag = "0"
     if(regbin[0]=="1"):
         flag = "1"
@@ -26,10 +26,12 @@ def sub(rd,rs1,rs2):
     rd[1] = rs1[1]-rs2[1]
     return funct7+rs2[0]+rs1[0]+funct3+rd[0]+opcode
     
-def lw(rd,sextimm,rs):
+def lw(rd,imm,rs):
     opcode="0000011"
     funct3="010"
-    rd[1]=rs[1]+sextimm[1]
+    sextimm = sext(imm,11)
+    sextrs = sext(rs[1])
+    rd[1]=sextrs+sextimm
     return sextimm+rs[0]+funct3+rd[0]+opcode
 
 def slt(rd,rs1,rs2):
