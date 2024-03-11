@@ -25,6 +25,12 @@ def sub(rd,rs1,rs2):
     funct3 = "000"
     rd[1] = rs1[1]-rs2[1]
     return funct7+rs2[0]+rs1[0]+funct3+rd[0]+opcode
+    
+def lw(rd,sextimm,rs):
+    opcode="0000011"
+    funct3="010"
+    rd[1]=rs[1]+sextimm[1]
+    return sextimm+rs[0]+funct3+rd[0]+opcode
 
 def slt(rd,rs1,rs2):
     opcode = "0110011"
