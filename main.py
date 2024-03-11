@@ -25,7 +25,21 @@ def sub(rd,rs1,rs2):
     funct3 = "000"
     rd[1] = rs1[1]-rs2[1]
     return funct7+rs2[0]+rs1[0]+funct3+rd[0]+opcode
-    
+def sub(rd,x0,rs):
+    opcode="0110011"
+    funct7="0100000"
+    funct3="000"
+    rd[1]=x0-rs[1]
+    return funct7+x0+rs[0]+funct3+rd[0]+opcode
+def sltu (rd,rs1,rs2):
+    opcode="0110011"
+    funct7="0000000"
+    funct3="011"
+    if rs1[1]<rs2[1]:
+        rd[1]=1
+    else:
+        rd[1]=0
+    return funct7+rs2[0]+rs1[0]+funct3+rd[0]+opcode
 def lw(rd,imm,rs):
     opcode="0000011"
     funct3="010"
