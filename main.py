@@ -259,10 +259,12 @@ with open("coprj_mvy\input.txt") as f:
                    break
     PC = 1  
     # if (ErrorGen()):
-        # Executing each line
+        # Executing each lin
+    
     for i in range(len(x)):
-        instruction = (x[i].split(" "))[0]
+        instruction = x[i].split(" ")[0]
         memreg = x[i].split(" ")[1].split(",")
+        # print(memreg)
         # coverting immediates to int
         for j in range(len(memreg)):
             if memreg[j].isnumeric() or memreg[j][0]=="-":
