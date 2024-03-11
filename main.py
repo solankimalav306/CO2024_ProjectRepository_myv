@@ -120,6 +120,45 @@ def auipc(rd,imm):
     opcode="0010111"
     imm_binary = sext(imm,20)
     return imm_binary+rd[1]+opcode
+
+def beq(rs1, rs2, imm):
+    opcode = "1100011"
+    funct3="000"
+    imm_binary = sext(imm,18)
+    return imm_binary[4:11]+rs2[0] + rs1[0] +funct3+ imm_binary[15:19]+ opcode
+
+def bne(rs1, rs2, imm):
+    opcode = "1100011"
+    funct3="001"
+    imm_binary = sext(imm,18)
+    return imm_binary[4:11]+rs2[0] + rs1[0] +funct3+ imm_binary[15:19]+ opcode
+
+def bge(rs1, rs2, imm):
+    opcode = "1100011"
+    funct3="101"
+    imm_binary = sext(imm,18)
+    return imm_binary[4:11]+rs2[0] + rs1[0] +funct3+ imm_binary[15:19]+opcode
+
+
+def bgeu(rs1, rs2, imm):
+    opcode = "1100011"
+    funct3="111"
+    imm_binary = sext(imm,18)
+    return imm_binary[4:11]+rs2[0] + rs1[0] +funct3+ imm_binary[15:19]+ opcode
+
+
+def blt(rs1, rs2, imm):
+    opcode = "1100011"
+    funct3="100"
+    imm_binary = sext(imm,18)
+    return imm_binary[4:11]+rs2[0] + rs1[0] +funct3+ imm_binary[15:19]+opcode
+
+
+def bltu(rs1, rs2, imm):
+    opcode = "1100011"
+    funct3="110"
+    imm_binary = sext(imm,18)
+    return imm_binary[4:11]+rs2[0]+rs1[0]+funct3+imm_binary[15:19]+opcode
     
 RegList = [["zero","00000",0],["ra","00001",0],["sp","00010",0],["gp","00011",18],["tp","00100",0],["t0","00101",0],["t1","00110",0],["t2","00111",0],["s0 fp","01000",0],["s1","01001",0],["a0","01010",0],["a1","01011",0],["a2","01100",0],["a3","01101",0],["a4","01110",0],["a5","01111",0],["a6","10000",0],["a7","10001",0],["s2","10010",0],["s3","10011",0],["s4","10100",0],["s5","10101",0],["s6","10110",0],["s7","10111",0],["s8","11000",0],["s9","11001",0],["s10","11010",0],["s11","11011",0],["t3","11100",0],["t4","11101",0],["t5","11110",0],["t6","11111",0]]
 r_type=["add","sub","slt","sltu","xor","sll","srl","Or","And"]
