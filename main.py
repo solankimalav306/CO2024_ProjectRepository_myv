@@ -1,16 +1,12 @@
-def sext(imm,bit):
-    if(imm>0):
-        regbin = "0"+str(bin(imm))[2:]
+def sext(imm, bit):
+    if imm >= 0:
+        regbin = "0" + format(imm, 'b')
     else:
-        regbin = "1"+str(bin(imm))[3:]
-    flag = "0"
-    if(regbin[0]=="1"):
-        flag = "1"
-    elif(regbin[0]=="0"):
-        flag = "0"
-    s=(bit-len(regbin)-1)*flag
-    s+=regbin
+        regbin = "1" + format(imm & (2**bit - 1), 'b')
+    flag = regbin[0]
+    s = (bit - len(regbin)) * flag + regbin
     return s
+
 
 # def bintodeci(binval,bit):
 #     flag = 0
@@ -46,7 +42,7 @@ def sltu (rd,rs1,rs2):
 def lw(rd,rs,imm):
     opcode="0000011"
     funct3="010"
-    sextimm = sext(imm,13)
+    sextimm = sext(imm,12)
     # sextrs = sext(rs[1],11)
     # rd[1]=sextrs+sextimm
     return sextimm+rs[1]+funct3+rd[1]+opcode
@@ -89,18 +85,18 @@ def and_bitwise(rd,rs1,rs2):
 def sw(rs1,rs2,imm):
     opcode = "0100011"
     funct3 = "010"
-    immbin = sext(imm,13)
+    immbin = sext(imm,12)
     return immbin[0:7]+rs2[1]+rs1[1]+funct3+immbin[7:]+opcode
 def addi(rd,rs,imm):
     opcode = "0010011"
     funct3= "000"
-    sextimm=sext(imm,13)
+    sextimm=sext(imm,12)
     return sextimm+rs[1]+funct3+rd[1]+opcode
 
 def sltiu(rd,rs,imm):
     opcode = "0010011"
     funct3 = "011"
-    sextimm = sext(imm,13)
+    sextimm = sext(imm,12)
     # if rs[1]<imm:
     #     rd[1]=1
     return sextimm+rs[1]+funct3+rd[1]+opcode
@@ -109,62 +105,85 @@ def jalr(rd,offset):
     opcode = "1100111"
     funct3 = "000"
     rd[1]= offset + 4
-    sextoff=sext(offset,11)
+    sextoff=sext(offset,12)
     return sextoff+RegList[5][1]+funct3+rd[1]+opcode
     
 def lui(rd,imm):
     opcode="0110111"
     seximm=sext(imm,20)
+    print(len(seximm))
     return seximm+rd[1]+opcode
+
 def auipc(rd,imm):
     opcode="0010111"
-    imm_binary = sext(imm,20)
+    imm_binary = sext(imm,18)
     return imm_binary+rd[1]+opcode
 
 def beq(rs1, rs2, imm):
     opcode = "1100011"
-    funct3="000"
-    imm_binary = sext(imm,18)
-    return imm_binary[4:11]+rs2[1] + rs1[1] +funct3+ imm_binary[15:19]+ opcode
+    funct3 = "000"
+    imm_binary = sext(imm, 13)
+    return imm_binary[0] + imm_binary[2:7] + rs2[1] + rs1[1] + funct3 + imm_binary[7:12] + imm_binary[1] + opcode
+
 
 def bne(rs1, rs2, imm):
     opcode = "1100011"
-    funct3="001"
-    imm_binary = sext(imm,18)
-    return imm_binary[4:11]+rs2[1] + rs1[1] +funct3+ imm_binary[15:19]+ opcode
+    funct3 = "001"
+    imm_binary = sext(imm, 13)
+    return imm_binary[1] + imm_binary[2:8] + rs2[1] + rs1[1] + funct3 + imm_binary[8:12] + imm_binary[0] + opcode
+
+def blt(rs1, rs2, imm):
+    opcode = "1100011"
+    funct3 = "100"
+    imm_binary = sext(imm, 13)
+    return imm_binary[1] + imm_binary[2:8] + rs2[1] + rs1[1] + funct3 + imm_binary[8:12] + imm_binary[0] + opcode
 
 def bge(rs1, rs2, imm):
     opcode = "1100011"
-    funct3="101"
-    imm_binary = sext(imm,18)
-    return imm_binary[4:11]+rs2[1] + rs1[1] +funct3+ imm_binary[15:19]+opcode
+    funct3 = "101"
+    imm_binary = sext(imm, 13)
+    return imm_binary[1] + imm_binary[2:8] + rs2[1] + rs1[1] + funct3 + imm_binary[8:12] + imm_binary[0] + opcode
 
+def bltu(rs1, rs2, imm):
+    opcode = "1100011"
+    funct3 = "110"
+    imm_binary = sext(imm, 13)
+    return imm_binary[1] + imm_binary[2:8] + rs2[1] + rs1[1] + funct3 + imm_binary[8:12] + imm_binary[0] + opcode
 
 def bgeu(rs1, rs2, imm):
     opcode = "1100011"
-    funct3="111"
-    imm_binary = sext(imm,18)
-    return imm_binary[4:11]+rs2[1] + rs1[1] +funct3+ imm_binary[15:19]+ opcode
+    funct3 = "111"
+    imm_binary = sext(imm, 13)
+    return imm_binary[1] + imm_binary[2:8] + rs2[1] + rs1[1] + funct3 + imm_binary[8:12] + imm_binary[0] + opcode
+
+def sll(rd,rs1,rs2):
+    opcode="0110011"
+    funct7="0000000"
+    funct3="001"
+    return funct7+rs2[1]+rs1[1]+funct3+rd[1]+opcode
 
 
 def blt(rs1, rs2, imm):
     opcode = "1100011"
     funct3="100"
-    imm_binary = sext(imm,18)
+    imm_binary = sext(imm,16)
     return imm_binary[4:11]+rs2[1] + rs1[1] +funct3+ imm_binary[15:19]+opcode
 
 
 def bltu(rs1, rs2, imm):
     opcode = "1100011"
     funct3="110"
-    imm_binary = sext(imm,18)
+    imm_binary = sext(imm,16)
     return imm_binary[4:11]+rs2[1]+rs1[1]+funct3+imm_binary[15:19]+opcode
-def jal(rd,imm):
-    opcode="1101111"
-    imm_binary=sext(imm,22)
-    return imm_binary[11:19]+imm_binary[0:9]+rd[1]+opcode
+
+def jal(rd, imm):
+    opcode = "1101111"
+    imm_binary = sext(imm, 21)
+    return imm_binary[0] + imm_binary[10:20] + imm_binary[9] + imm_binary[1:9] + rd[1] + opcode
+
+
     
-RegList = [["zero","00000",0],["ra","00001",0],["sp","00010",0],["gp","00011",18],["tp","00100",0],["t0","00101",0],["t1","00110",0],["t2","00111",0],["s0 fp","01000",0],["s1","01001",0],["a0","01010",0],["a1","01011",0],["a2","01100",0],["a3","01101",0],["a4","01110",0],["a5","01111",0],["a6","10000",0],["a7","10001",0],["s2","10010",0],["s3","10011",0],["s4","10100",0],["s5","10101",0],["s6","10110",0],["s7","10111",0],["s8","11000",0],["s9","11001",0],["s10","11010",0],["s11","11011",0],["t3","11100",0],["t4","11101",0],["t5","11110",0],["t6","11111",0]]
+RegList = [["zero","00000",0],["ra","00001",0],["sp","00010",0],["gp","00011",0],["tp","00100",0],["t0","00101",0],["t1","00110",0],["t2","00111",0],["s0","01000",0,"fp"],["s1","01001",0],["a0","01010",0],["a1","01011",0],["a2","01100",0],["a3","01101",0],["a4","01110",0],["a5","01111",0],["a6","10000",0],["a7","10001",0],["s2","10010",0],["s3","10011",0],["s4","10100",0],["s5","10101",0],["s6","10110",0],["s7","10111",0],["s8","11000",0],["s9","11001",0],["s10","11010",0],["s11","11011",0],["t3","11100",0],["t4","11101",0],["t5","11110",0],["t6","11111",0]]
 r_type=["add","sub","slt","sltu","xor","sll","srl","Or","And"]
 i_type=["lw","addi","sltiu","jalr"]
 s_type=["sw"]
@@ -282,103 +301,106 @@ def ErrorGen():
                         return 0
     return 1
 Binlst = []
-with open("coprj_mvy\input.txt") as f:
-    x = f.readlines()
-    # Numbering Each line
-    for i in range(len(x)):
-        if(i!=len(x)-1):
-            x[i] = x[i][:-1]
-    # Figuring the Labels and correcting the Indents if label is present
-    Label = []
-    if(x[0][0]==" " or ":" in x[0]):
+
+if ErrorGen():
+    with open("coprj_mvy\input.txt") as f:
+        x = f.readlines()
+        # Numbering Each line
         for i in range(len(x)):
-           if ":" not in x[i]:
-               x[i] = x[i][4:]
-           for j in range(len(x[i])):
-               if x[i][j]==":":
-                   templabel = [i,x[i][:j]]
-                   Label.append(templabel)
-                   x[i] = x[i][j+2:]
-                   break
-    PC = 1  
-    # if (ErrorGen()):
-        # Executing each lin
-    
-    for i in range(len(x)):
-        instruction = x[i].split(" ")[0]
-        memreg = x[i].split(" ")[1].split(",")
-        # print(memreg)
-        # coverting immediates to int
-        for j in range(len(memreg)):
-            if memreg[j].isnumeric() or memreg[j][0]=="-":
-                memreg[j]=int(memreg[j])
-        for j in range(len(memreg)):
-            if isinstance(memreg[j], str):
-                if "(" in memreg[j]:
-                    # print(memreg[i])
-                    templst = [memreg[j].split("(")[1][:-1],int(memreg[j].split("(")[0])]
-                    memreg.pop(j)
-                    memreg.extend(templst)
-                    
-        for j in range(len(memreg)):
-            if isinstance(memreg[j], str):
-                for k in range(len(RegList)):
-                    if memreg[j] in RegList[k]:
-                        memreg[j]=RegList[k]
-        # for i in range(len(memreg)):
-        #     if 
-        # print(memreg)
-
+            if(i!=len(x)-1):
+                x[i] = x[i][:-1]
+        # Figuring the Labels and correcting the Indents if label is present
+        Label = []
+        if(x[0][0]==" " or ":" in x[0]):
+            for i in range(len(x)):
+                if ":" not in x[i]:
+                    x[i] = x[i][4:]
+                for j in range(len(x[i])):
+                    if x[i][j]==":":
+                        templabel = [i,x[i][:j]]
+                        Label.append(templabel)
+                        x[i] = x[i][j+2:]
+                        break
+        PC = 1  
         
-        PC+=1 
-        if instruction == "add":
-            Binlst.append(add(memreg[0],memreg[1],memreg[2]))
-        elif instruction == "sub":
-            Binlst.append(sub(memreg[0],memreg[1],memreg[2]))
-        elif instruction =="sltu":
-            Binlst.append(sltu(memreg[0],memreg[1],memreg[2]))
-        elif instruction =="slt":
-            Binlst.append(slt(memreg[0],memreg[1],memreg[2]))
-        elif instruction =="xor":
-            Binlst.append(xor_bitwise(memreg[0],memreg[1],memreg[2]))
-        elif instruction =="sll":
-            Binlst.append(sll(memreg[0],memreg[1],memreg[2]))
-        elif instruction =="srl":
-            Binlst.append(srl(memreg[0],memreg[1],memreg[2]))
-        elif instruction =="or":
-            Binlst.append(or_bitwise(memreg[0],memreg[1],memreg[2]))
-        elif instruction =="and":
-            Binlst.append(and_bitwise(memreg[0],memreg[1],memreg[2]))
-        elif instruction in ["lb","lh","lw","ld"]:
-            Binlst.append(lw(memreg[0],memreg[1],memreg[2]))
-        elif instruction == "addi":
-            Binlst.append(addi(memreg[0],memreg[1],memreg[2]))
-        elif instruction == "sltiu":
-            Binlst.append(sltiu(memreg[0],memreg[1],memreg[2]))
-        elif instruction == "jalr":
-            Binlst.append(jalr(memreg[0],memreg[1],memreg[2]))
-        elif instruction in ["sb","sh","sw","sd"]:
-            Binlst.append(sw(memreg[0],memreg[1],memreg[2]))
-        elif instruction == "beq":
-            Binlst.append(beq(memreg[0],memreg[1],memreg[2]))
-        elif instruction == "beq":
-            Binlst.append(bne(memreg[0],memreg[1],memreg[2]))
-        elif instruction == "bne":
-            Binlst.append(bge(memreg[0],memreg[1],memreg[2]))
-        elif instruction == "bge":
-            Binlst.append(bge(memreg[0],memreg[1],memreg[2]))
-        elif instruction == "bgeu":
-            Binlst.append(bgeu(memreg[0],memreg[1],memreg[2]))
-        elif instruction == "bltu":
-            Binlst.append(bltu(memreg[0],memreg[1],memreg[2]))
-        elif instruction == "auipc":
-            Binlst.append(auipc(memreg[0],memreg[1]))
-        elif instruction == "lui":
-            Binlst.append(lui(memreg[0],memreg[1]))
-        elif instruction == "jal":
-            Binlst.append(jal(memreg[0],memreg[1]))
+        for i in range(len(x)):
+            instruction = x[i].split(" ")[0]
+            memreg = x[i].split(" ")[1].split(",")
+            # print(memreg)
+            # coverting immediates to int
+            for j in range(len(memreg)):
+                if memreg[j].isnumeric() or memreg[j][0]=="-":
+                    memreg[j]=int(memreg[j])
+            for j in range(len(memreg)):
+                if isinstance(memreg[j], str):
+                    if "(" in memreg[j]:
+                        # print(memreg[i])
+                        templst = [memreg[j].split("(")[1][:-1],int(memreg[j].split("(")[0])]
+                        memreg.pop(j)
+                        memreg.extend(templst)
+                        
+            for j in range(len(memreg)):
+                if isinstance(memreg[j], str):
+                    for k in range(len(RegList)):
+                        if memreg[j] in RegList[k]:
+                            memreg[j]=RegList[k]
+            # for i in range(len(memreg)):
+            #     if 
+            # print(memreg)
 
-with open("coprj_mvy\output.txt","w+") as g:
-    for i in Binlst:
-        g.write(i+"\n")
+            
+            PC+=1 
+            if instruction == "add":
+                Binlst.append(add(memreg[0],memreg[1],memreg[2]))
+            elif instruction == "sub":
+                Binlst.append(sub(memreg[0],memreg[1],memreg[2]))
+            elif instruction =="sltu":
+                Binlst.append(sltu(memreg[0],memreg[1],memreg[2]))
+            elif instruction =="slt":
+                Binlst.append(slt(memreg[0],memreg[1],memreg[2]))
+            elif instruction =="xor":
+                Binlst.append(xor_bitwise(memreg[0],memreg[1],memreg[2]))
+            elif instruction =="sll":
+                Binlst.append(sll(memreg[0],memreg[1],memreg[2]))
+            elif instruction =="srl":
+                Binlst.append(srl(memreg[0],memreg[1],memreg[2]))
+            elif instruction =="or":
+                Binlst.append(or_bitwise(memreg[0],memreg[1],memreg[2]))
+            elif instruction =="and":
+                print(memreg)
+                Binlst.append(and_bitwise(memreg[0],memreg[1],memreg[2]))
+            elif instruction in ["lb","lh","lw","ld"]:
+                Binlst.append(lw(memreg[0],memreg[1],memreg[2]))
+            elif instruction == "addi":
+                Binlst.append(addi(memreg[0],memreg[1],memreg[2]))
+            elif instruction == "sltiu":
+                Binlst.append(sltiu(memreg[0],memreg[1],memreg[2]))
+            elif instruction == "jalr":
+                Binlst.append(jalr(memreg[0],memreg[1],memreg[2]))
+            elif instruction in ["sb","sh","sw","sd"]:
+                Binlst.append(sw(memreg[0],memreg[1],memreg[2]))
+            elif instruction == "beq":
+                Binlst.append(beq(memreg[0],memreg[1],memreg[2]))
+            elif instruction == "beq":
+                Binlst.append(bne(memreg[0],memreg[1],memreg[2]))
+            elif instruction == "bne":
+                Binlst.append(bge(memreg[0],memreg[1],memreg[2]))
+            elif instruction == "bge":
+                Binlst.append(bge(memreg[0],memreg[1],memreg[2]))
+            elif instruction == "bgeu":
+                Binlst.append(bgeu(memreg[0],memreg[1],memreg[2]))
+            elif instruction == "bltu":
+                Binlst.append(bltu(memreg[0],memreg[1],memreg[2]))
+            elif instruction == "auipc":
+                Binlst.append(auipc(memreg[0],memreg[1]))
+            elif instruction == "lui":
+                Binlst.append(lui(memreg[0],memreg[1]))
+            elif instruction == "jal":
+                Binlst.append(jal(memreg[0],memreg[1]))
+
+    with open("coprj_mvy\output.txt","w+") as g:
+        for i in Binlst:
+            g.write(i+"\n")
+else:
+    print("error")
     # print(Label)
