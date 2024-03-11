@@ -49,7 +49,7 @@ def sltu (rd,rs1,rs2):
     else:
         rd[1]=0
     return funct7+rs2[0]+rs1[0]+funct3+rd[0]+opcode    
-def lw(rd,imm,rs):
+def lw(rd,rs,imm):
     opcode="0000011"
     funct3="010"
     sextimm = sext(imm,11)
@@ -92,7 +92,7 @@ def And(rd,rs1,rs2):
     funct3 = "111"
     return funct7+rs2[0]+rs1[0]+funct3+rd[0]+opcode
 
-def sw(imm,rs1,rs2):
+def sw(rs1,rs2,imm):
     opcode = "0100011"
     funct3 = "010"
     immbin = sext(imm,11)
@@ -117,7 +117,12 @@ def jalr(rd,offset):
     rd[1]= offset + 4
     sextoff=sext(offset,11)
     return sextoff+RegList[5][0]+funct3+rd[0]+opcode
-
+    
+def lui(rd,imm):
+    opcode="0110111"
+    seximm=sext(imm,20)
+    return seximm+rd[0]+opcode
+    
 RegList = [["zero","00000",0],["ra","00001",0],["sp","00010",0],["gp","00011",18],["tp","00100",0],["t0","00101",0],["t1","00110",0],["t2","00111",0],["s0 fp","01000",0],["s1","01001",0],["a0","01010",0],["a1","01011",0],["a2","01100",0],["a3","01101",0],["a4","01110",0],["a5","01111",0],["a6","10000",0],["a7","10001",0],["s2","10010",0],["s3","10011",0],["s4","10100",0],["s5","10101",0],["s6","10110",0],["s7","10111",0],["s8","11000",0],["s9","11001",0],["s10","11010",0],["s11","11011",0],["t3","11100",0],["t4","11101",0],["t5","11110",0],["t6","11111",0]]
 r_type=["add","sub","slt","sltu","xor","sll","srl","Or","And"]
 i_type=["lw","addi","sltiu","jalr"]
