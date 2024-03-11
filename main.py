@@ -125,40 +125,40 @@ def beq(rs1, rs2, imm):
     opcode = "1100011"
     funct3="000"
     imm_binary = sext(imm,18)
-    return imm_binary[4:11]+rs2[0] + rs1[0] +funct3+ imm_binary[15:19]+ opcode
+    return imm_binary[4:11]+rs2[1] + rs1[1] +funct3+ imm_binary[15:19]+ opcode
 
 def bne(rs1, rs2, imm):
     opcode = "1100011"
     funct3="001"
     imm_binary = sext(imm,18)
-    return imm_binary[4:11]+rs2[0] + rs1[0] +funct3+ imm_binary[15:19]+ opcode
+    return imm_binary[4:11]+rs2[1] + rs1[1] +funct3+ imm_binary[15:19]+ opcode
 
 def bge(rs1, rs2, imm):
     opcode = "1100011"
     funct3="101"
     imm_binary = sext(imm,18)
-    return imm_binary[4:11]+rs2[0] + rs1[0] +funct3+ imm_binary[15:19]+opcode
+    return imm_binary[4:11]+rs2[1] + rs1[1] +funct3+ imm_binary[15:19]+opcode
 
 
 def bgeu(rs1, rs2, imm):
     opcode = "1100011"
     funct3="111"
     imm_binary = sext(imm,18)
-    return imm_binary[4:11]+rs2[0] + rs1[0] +funct3+ imm_binary[15:19]+ opcode
+    return imm_binary[4:11]+rs2[1] + rs1[1] +funct3+ imm_binary[15:19]+ opcode
 
 
 def blt(rs1, rs2, imm):
     opcode = "1100011"
     funct3="100"
     imm_binary = sext(imm,18)
-    return imm_binary[4:11]+rs2[0] + rs1[0] +funct3+ imm_binary[15:19]+opcode
+    return imm_binary[4:11]+rs2[1] + rs1[1] +funct3+ imm_binary[15:19]+opcode
 
 
 def bltu(rs1, rs2, imm):
     opcode = "1100011"
     funct3="110"
     imm_binary = sext(imm,18)
-    return imm_binary[4:11]+rs2[0]+rs1[0]+funct3+imm_binary[15:19]+opcode
+    return imm_binary[4:11]+rs2[1]+rs1[1]+funct3+imm_binary[15:19]+opcode
 def jal(rd,imm):
     opcode="1101111"
     imm_binary=sext(imm,22)
